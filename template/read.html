@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>{{.title}}</title>
+</head>
+<body>
+
+<h1>Hello Worlds</h1>
+
+
+{{range $index,$value := .result}}
+	<h2>{{$value}}</h2>
+	<h2>{{.result}}</h2>
+{{end}}
+
+<form method="POST">
+	<input type="submit" name="">
+</form>
+
+</body>
+</html>
