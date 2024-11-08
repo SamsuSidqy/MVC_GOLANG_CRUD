@@ -10,13 +10,19 @@ import (
 
 type D map[string]interface{}
 
+
 func ControllerRead(w http.ResponseWriter,r *http.Request){
-	fmt.Println(r.Method)	
+	fmt.Println(r.Method)
+
+	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "404 Not Found")
+		return
+	}
+
+
 	if r.Method == "GET"{	
-		result := Person.GetallData()
-		if result != nil {
-			fmt.Printf("%T\n",result[0])
-		}
+		
 		var data = D {
 			"title":"Halaman Read",
 			"result":Person.GetallData(),	
@@ -24,8 +30,15 @@ func ControllerRead(w http.ResponseWriter,r *http.Request){
 		t,err := template.ParseFiles("template/read.html")
 		if err!= nil { fmt.Println("Ada Error =>",err)}
 		t.ExecuteTemplate(w,"read.html",data)
+
 	}else if r.Method == "POST"{
-		fmt.Println(r.Method)
+
+		result := Person.InsertData(r.FormValue("nama"),r.FormValue("alamat"))
+
+		if result{
+			fmt.Println(result)
+			http.Redirect(w,r,"/",http.StatusSeeOther)
+		}
 	}else{
 
 	}
