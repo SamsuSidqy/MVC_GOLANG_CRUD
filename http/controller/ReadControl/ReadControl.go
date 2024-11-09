@@ -14,11 +14,7 @@ type D map[string]interface{}
 func ControllerRead(w http.ResponseWriter,r *http.Request){
 	fmt.Println(r.Method)
 
-	if r.URL.Path != "/" {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "404 Not Found")
-		return
-	}
+	
 
 
 	if r.Method == "GET"{	

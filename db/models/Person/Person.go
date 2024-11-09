@@ -62,17 +62,63 @@ func InsertData(nama string, alamat string) bool {
 	getNama := template.HTMLEscapeString(nama)
 	getAlamat := template.HTMLEscapeString(alamat)
 	
-	rows,errquer := db.Exec("INSERT INTO person VALUES('',?,?)",getNama,getAlamat)
+
+	rows,errquer := db.Exec("INSERT INTO person (nama,alamat) VALUES(?,?)",getNama,getAlamat)
+
+	
+	defer db.Close()
 
 	if errquer != nil{
-		fmt.Println("Query Berhasil Di Insert",rows)
-		return true
-	}else{
-		fmt.Println(errquer)
-
+		fmt.Println("Gagal Insert",errquer)
 		return false
+	}else{
+		fmt.Println(rows)
+		return true
 	}
 
 	
+}
+
+func CekData(id string) bool {
+	db,err := conn.Connect()
+
+	if err != nil {
+		fmt.Println("Error Koneksi", err)
+		return false
+	}
+	removeChar := template.HTMLEscapeString(id)	
+	fmt.Println(removeChar)
+	var result Orang
+	defer db.Close()
+	rows := db.QueryRow("SELECT * FROM person WHERE id=?",removeChar).Scan(&result.Id,&result.Nama,&result.Alamat)
+	if rows != nil{
+		fmt.Println("Failed Query",rows)
+		return false
+	}else{
+		return true
+	}
+}
+
+func DeleteData(id string) bool {
+	db,err := conn.Connect()
+
+	if err != nil {
+		fmt.Println("Error Koneksi", err)
+		return false
+	}
+	removeChar := template.HTMLEscapeString(id)	
+	fmt.Println(removeChar)
+	defer db.Close()
+
+	result, err := db.Exec("DELETE FROM person WHERE id = ?", removeChar)
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+    	fmt.Println("Failed Query :",err)
+    	return false
+	}else{
+		fmt.Println("Success Query :",rowsAffected)
+		return true
+	}
+
 }
 
