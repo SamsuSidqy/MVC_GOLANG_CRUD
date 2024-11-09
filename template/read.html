@@ -40,8 +40,20 @@ th {
   cursor: pointer;
 }
 
+.btn-save, .btn-cancel {
+  padding: 10px 20px;
+  background-color: #4CAF50; /* Hijau untuk Hapus */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
 .btn-edit {
   background-color: #2196F3; /* Biru untuk Edit */
+}
+.btn-cancel{
+  background-color:#2196F3 ;
 }
 
 .modal {
@@ -80,9 +92,9 @@ th {
 <table style="margin-left:25%;">
 	<tr>
 		<form method="POST">
-  			<td><input placeholder="Nama"  style="border-radius: 5px; height:40px;" type="text"  
+  			<td><input autocomplete="off" required placeholder="Nama"  style="border-radius: 5px; height:40px;" type="text"  
   			name="nama"></td>
-  			<td><input placeholder="Alamat" style="border-radius: 5px; height:40px;" type="text"  name="alamat"></td>
+  			<td><input autocomplete="off" required placeholder="Alamat" style="border-radius: 5px; height:40px;" type="text"  name="alamat"></td>
   			<td>
   				<button type="submit" class="btn-edit">Tambah Data</button>
   			</td>
@@ -104,21 +116,25 @@ th {
     <td>{{.Alamat}}</td>
     <td>
     	<button class="btn-hapus" idData="{{.Id}}" namaData="{{.Nama}}" onclick="HapusRequest('{{.Id}}')">Hapus</button>
-        <button class="btn-edit">Edit</button>
+        <button class="btn-edit" type="submit" onclick="EditRequest('{{.Id}}')" id="btnEdit{{.Id}}" idData="{{.Id}}" alamatData="{{.Alamat}}" namaData="{{.Nama}}">
+        Edit</button>
     </td>
   </tr>
   {{end}}  
 </table>
 <br>	
 
-<table style="margin-left:25%; display: none;">
+<table style="margin-left:25%; display: none;" id="showEdit">
 	<tr>
-  		<td><input placeholder="Nama"  style="border-radius: 5px; height:40px;" type="text" value="asdasda" name=""></td>
-  		<td><input placeholder="Alamat" style="border-radius: 5px; height:40px;" type="text" value="asdsadasd" name=""></td>
+    <form id="formUpdate" method="POST">
+  		<td><input autocomplete="off" placeholder="nama" id="inputNama"  style="border-radius: 5px; height:40px;" type="text"  name="nama"></td>
+  		<td><input autocomplete="off" placeholder="alamat" id="inputAlamat" style="border-radius: 5px; height:40px;" type="text" name="alamat">
+        <input type="hidden" name="id" id="inputId"></td>
   		<td>
-  			<button class="btn-edit">Save</button>
-  			<button class="btn-hapus" style="background-color: red;">Cancel</button>
+  			<button class="btn-save" id="saveUpdate">Save</button>
+  			<button class="btn-cancel" type="button" id="cancelBtn" style="background-color: red;">Cancel</button>
   		</td>
+    </form>
   </tr>
 </table>
 
@@ -136,6 +152,41 @@ const HapusRequest = async(id) => {
 		window.location.href = `http://${window.location.host}`
 	}
 }
+
+const EditRequest = async(id) => {
+  const showEdit = document.getElementById(`btnEdit${id}`)
+
+  showEdit.addEventListener('click',() => {
+    console.log(22)
+    const tampilEdit = document.getElementById("showEdit")
+    tampilEdit.style.display = "block"
+    showEdit.style.display = "none"
+
+    const namaInput = document.getElementById("inputNama")
+    const alamatInput = document.getElementById("inputAlamat")
+    const idInput = document.getElementById("inputId")
+
+    namaInput.setAttribute("value",showEdit.getAttribute("namaData"))
+    alamatInput.setAttribute("value",showEdit.getAttribute("alamatData"))
+    idInput.setAttribute("value",showEdit.getAttribute("idData"))
+
+    const btnCancel = document.getElementById("cancelBtn")
+
+    btnCancel.addEventListener("click",()=>{
+      tampilEdit.style.display = "none"
+      showEdit.style.display="block"
+    })
+
+    const saveBtn = document.getElementById("saveUpdate")
+    let forms = document.getElementById('formUpdate')
+    forms.action = "/update/"
+    saveBtn.addEventListener("onclick",()=>{     
+      forms.submit()
+    })
+
+  })
+}
+
 </script>
 </body>
 </html>

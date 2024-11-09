@@ -14,8 +14,6 @@ type D map[string]interface{}
 func ControllerRead(w http.ResponseWriter,r *http.Request){
 	fmt.Println(r.Method)
 
-	
-
 
 	if r.Method == "GET"{	
 		

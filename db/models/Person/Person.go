@@ -122,3 +122,28 @@ func DeleteData(id string) bool {
 
 }
 
+func UpdateData(id string,nama string,alamat string) bool {
+	db,err := conn.Connect()
+
+	if err != nil {
+		fmt.Println("Error Koneksi", err)
+		return false
+	}
+	id_s := template.HTMLEscapeString(id)
+	nama_s := template.HTMLEscapeString(nama)	
+	alamat_s := template.HTMLEscapeString(alamat)
+	
+	defer db.Close()
+
+	result, err := db.Exec("UPDATE person SET nama = ?, alamat = ? WHERE id = ?", nama_s,alamat_s,id_s)
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+    	fmt.Println("Failed Query :",err)
+    	return false
+	}else{
+		fmt.Println("Success Query :",rowsAffected)
+		return true
+	}
+}
+
